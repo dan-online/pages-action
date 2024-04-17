@@ -71,7 +71,7 @@ try {
       $ export CLOUDFLARE_ACCOUNT_ID="${accountId}"
     }
   
-    $$ npx wrangler@${wranglerVersion} pages publish "${directory}" --project-name="${projectName}" --branch="${branch}"
+    $$ yarn wrangler pages deploy "${directory}" --project-name="${projectName}" --branch="${branch}"
     `;
 
 		const response = await fetch(
