@@ -22167,7 +22167,7 @@ try {
       $ export CLOUDFLARE_ACCOUNT_ID="${accountId}"
     }
   
-    $$ npx wrangler@${wranglerVersion} pages publish "${directory}" --project-name="${projectName}" --branch="${branch}"
+    $$ yarn wrangler pages deploy "${directory}" --project-name="${projectName}" --branch="${branch}"
     `;
     const response = await (0, import_undici.fetch)(
       `https://api.cloudflare.com/client/v4/accounts/${accountId}/pages/projects/${projectName}/deployments`,
