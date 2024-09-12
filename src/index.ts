@@ -5,6 +5,7 @@ import shellac from "shellac";
 import { fetch } from "undici";
 import { env } from "process";
 import path from "node:path";
+import fs from 'fs';
 import { generateURL } from "./generateAlias";
 
 type Octokit = ReturnType<typeof getOctokit>;
@@ -65,13 +66,19 @@ try {
 
 	const createPagesDeployment = async () => {
 		// TODO: Replace this with an API call to wrangler so we can get back a full deployment response object
+		const packageLockExists = fs.existsSync(path.join(process.cwd(), workingDirectory, 'package.json'));
+		
 		await shellac.in(path.join(process.cwd(), workingDirectory))`
     $ export CLOUDFLARE_API_TOKEN="${apiToken}"
     if ${accountId} {
       $ export CLOUDFLARE_ACCOUNT_ID="${accountId}"
     }
   
-    $$ yarn wrangler pages deploy "${directory}" --project-name="${projectName}" --branch="${branch}"
+		if ${packageLockExists} {
+			$$ yarn wrangler pages deploy "${directory}" --project-name="${projectName}" --branch="${branch}"
+	  } else {
+			$$ npx wrangler pages deploy "${directory}" --project-name="${projectName}" --branch="${branch}"
+		}
     `;
 
 		const response = await fetch(
